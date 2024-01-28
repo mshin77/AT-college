@@ -3,7 +3,8 @@
 title: ''
 format:
   html:
-    self-contained: false
+    code-fold: false
+    code-tools: true
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ## Load Models  
 
 ```{r}
-#| code-fold: false
+#| code-fold: true
 suppressPackageStartupMessages({
   library(gtsummary)
   library(flextable)
