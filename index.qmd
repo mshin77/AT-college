@@ -308,6 +308,10 @@ rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 ```
+```{r}
+summary(main.PP7)
+```
+
 
 **PP4**
 
@@ -763,6 +767,19 @@ main.DK <- glmmPQL(DK ~ group + time + group:time,
                 random = ~ 1 | student, data = df, family=poisson)
 ```
 
+```{r, echo = FALSE}
+fixed <- intervals(main.DK,which="fixed")
+
+df <- data.frame(col = rep(NA, 4))
+df <- df[,-1, drop = FALSE]
+df$variable <- rownames(fixed$fixed)
+df$estimate <- fixed$fixed[, "est."]
+df$lower <- fixed$fixed[, "lower"]
+df$upper <- fixed$fixed[, "upper"]
+
+df %>% mutate(incidence_rate_ratio = exp(estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 3))
+```
 
 ```{r, echo = FALSE}
 VarCorr(main.DK)
@@ -778,6 +795,19 @@ model.DK <- glmmPQL(DK ~ myself + family + classmates +
                 random = ~ 1 | student, data = df, family=poisson)
 ```
 
+```{r, echo = FALSE}
+fixed <- intervals(model.DK,which="fixed")
+
+df <- data.frame(col = rep(NA, 16))
+df <- df[,-1, drop = FALSE]
+df$variable <- rownames(fixed$fixed)
+df$estimate <- fixed$fixed[, "est."]
+df$lower <- fixed$fixed[, "lower"]
+df$upper <- fixed$fixed[, "upper"]
+
+df %>% mutate(incidence_rate_ratio = exp(estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 3))
+```
 
 ```{r, echo = FALSE}
 VarCorr(model.DK)
