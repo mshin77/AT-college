@@ -768,18 +768,16 @@ main.DK <- glmmPQL(DK ~ group + time + group:time,
 ```
 
 ```{r, echo = FALSE}
-fixed <- intervals(main.DK,which="fixed")
+sum <- summary(main.DK)
 
-df <- data.frame(col = rep(NA, 4))
-df <- df[,-1, drop = FALSE]
-df$variable <- rownames(fixed$fixed)
-df$estimate <- fixed$fixed[, "est."]
-df$lower <- fixed$fixed[, "lower"]
-df$upper <- fixed$fixed[, "upper"]
-
-df %>% mutate(incidence_rate_ratio = exp(estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+cf <- sum$tTable %>% as.data.frame()
+cf$Estimate <- cf$Value
+cf %>% mutate(irr = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 3)) %>%
+  dplyr::select(-Value) %>%
+  dplyr::select(Estimate, everything()) 
 ```
+
 
 ```{r, echo = FALSE}
 VarCorr(main.DK)
@@ -796,17 +794,14 @@ model.DK <- glmmPQL(DK ~ myself + family + classmates +
 ```
 
 ```{r, echo = FALSE}
-fixed <- intervals(model.DK,which="fixed")
+sum <- summary(model.DK)
 
-df <- data.frame(col = rep(NA, 16))
-df <- df[,-1, drop = FALSE]
-df$variable <- rownames(fixed$fixed)
-df$estimate <- fixed$fixed[, "est."]
-df$lower <- fixed$fixed[, "lower"]
-df$upper <- fixed$fixed[, "upper"]
-
-df %>% mutate(incidence_rate_ratio = exp(estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+cf <- sum$tTable %>% as.data.frame()
+cf$Estimate <- cf$Value
+cf %>% mutate(irr = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 3)) %>%
+  dplyr::select(-Value) %>%
+  dplyr::select(Estimate, everything()) 
 ```
 
 ```{r, echo = FALSE}
