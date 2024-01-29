@@ -308,10 +308,6 @@ rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 ```
-```{r}
-summary(main.PP7)
-```
-
 
 **PP4**
 
