@@ -1,0 +1,3 @@
+"0","fixed <- intervals(model.DK,which=""fixed"")"
+"0","fixed_values <- fixed$fix[,1]"
+"0","exp(fixed_values) %>% round(3) %>% as.data.frame()"

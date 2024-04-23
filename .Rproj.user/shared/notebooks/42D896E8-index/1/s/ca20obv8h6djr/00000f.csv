@@ -1,0 +1,3 @@
+"0","df$SP1 <- as.factor(df$SP1)"
+"2","Error in df$SP1 : object of type 'closure' is not subsettable
+"
