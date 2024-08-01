@@ -1,5 +1,5 @@
 ---
-title: ''
+title: "Effects of Interactive and Hands-on Learning Experience of Assistive Technology on College Students' Perspectives and Knowledge: A Quasi-Experimental Study"
 format:
   html:
     code-fold: false
@@ -59,6 +59,49 @@ demo_tbl_ft
 
 ## Student Perspectives
 
+```{r}
+#| code-fold: true
+reverse_thresholds <- function(data) {
+  
+  coef_labels <- c("intercept (Y>1)", "intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
+
+    if (length(coef_labels) != 4) {
+    stop("coef_labels must have exactly 4 elements.")
+  }
+  
+  sum <- summary(data)
+  
+  cf <- as.data.frame(sum$coefficients)
+  
+  cf[1:4, 1] <- cf[1:4, 1] * -1
+  cf[1:4, 3] <- cf[1:4, 3] * -1
+  
+  rownames(cf)[1:4] <- coef_labels
+  
+  return(cf)
+}
+
+reverse_thresholds_alt <- function(data) {
+  
+  coef_labels <- c("intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
+
+    if (length(coef_labels) != 3) {
+    stop("coef_labels must have exactly 3 elements.")
+  }
+  
+  sum <- summary(data)
+  
+  cf <- as.data.frame(sum$coefficients)
+  
+  cf[1:3, 1] <- cf[1:3, 1] * -1
+  cf[1:3, 3] <- cf[1:3, 2] * -1
+  
+  rownames(cf)[1:3] <- coef_labels
+  
+  return(cf)
+}
+```
+
 #### Main Effects (SP)
 
 **SP1** 
@@ -72,14 +115,10 @@ main.SP1 <- clmm(SP1 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP1)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP1)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP2**
@@ -93,14 +132,10 @@ main.SP2 <- clmm(SP2 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP2)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds_alt(main.SP2)
 
-cf[1:3, 1] <- cf[1:3, 1]*-1
-cf[1:3, 3] <- cf[1:3, 3]*-1
-rownames(cf)[1:3] <- c("rating > 4", "rating > 3", "rating > 2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP3**
@@ -114,14 +149,10 @@ main.SP3 <- clmm(SP3 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP3)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP3)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP4**
@@ -135,14 +166,10 @@ main.SP4 <- clmm(SP4 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP4)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP4)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP5**
@@ -156,14 +183,10 @@ main.SP5 <- clmm(SP5 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP5)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP5)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP6**
@@ -177,14 +200,10 @@ main.SP6 <- clmm(SP6 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP6)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP6)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP7**
@@ -198,14 +217,10 @@ main.SP7 <- clmm(SP7 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP7)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP7)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **SP8**
@@ -219,14 +234,10 @@ main.SP8 <- clmm(SP8 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.SP8)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.SP8)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 ```{r}
@@ -250,14 +261,10 @@ main.PK1 <- clmm(PK1 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK1)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK1)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **PK2**
@@ -271,14 +278,10 @@ main.PK2 <- clmm(PK2 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK2 )
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK2)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **PK3**
@@ -292,14 +295,10 @@ main.PK3 <- clmm(PK3 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK3 )
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK3)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **PK4**
@@ -313,14 +312,10 @@ main.PK4 <- clmm(PK4 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK4 )
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK4)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **PK5**
@@ -334,14 +329,10 @@ main.PK5 <- clmm(PK5 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK5)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK5)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **PK6**
@@ -355,14 +346,10 @@ main.PK6 <- clmm(PK6 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK6)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK6)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 **PK7**
@@ -376,14 +363,10 @@ main.PK7 <- clmm(PK7 ~ group + time + group:time +
 
 
 ```{r}
-sum <- summary(main.PK7)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.PK7)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 ```
 
 ```{r}
