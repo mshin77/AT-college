@@ -1,5 +1,6 @@
 ---
 title: "Effects of Interactive and Hands-on Learning Experience of Assistive Technology on College Students' Perspectives and Knowledge: A Quasi-Experimental Study"
+date: "`r Sys.Date()`"
 format:
   html:
     code-fold: false
@@ -14,11 +15,14 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 
 ::: panel-tabset
 
-## Load Models  
+## Set-Up  
 
 ```{r}
 #| code-fold: true
 suppressPackageStartupMessages({
+  library(stringr)
+  library(scales)
+  library(reshape2)
   library(gtsummary)
   library(flextable)
   library(purrr)
@@ -29,6 +33,7 @@ suppressPackageStartupMessages({
   library(texreg)
   library(MASS)
   library(nlme)
+  library(tidyr)
 })
 
 load("data/AT-college.RData")
@@ -55,6 +60,235 @@ demo_tbl_ft <- as_flex_table(demo_tbl)
 
 ```{r}
 demo_tbl_ft 
+```
+
+## Graphs
+
+```{r, eval = FALSE}
+#| code-fold: true
+selected_data_control <- df %>% 
+  filter(group == 0) %>%
+  dplyr::select(ID, time, SP1:DK6) 
+   
+
+selected_data_experimental <- df %>% 
+  filter(group == 1) %>% 
+  dplyr::select(ID, time, SP1:DK6) 
+
+init_long_data_control <- melt(selected_data_control, id.vars = c('ID', 'time'), variable.name = 'question', value.name = 'response')
+init_long_data_experimental <- melt(selected_data_experimental, id.vars = c('ID', 'time'), variable.name = 'question', value.name = 'response')
+
+openxlsx::write.xlsx(init_long_data_control, "data/init_long_data_control.xlsx", asTable = TRUE)
+openxlsx::write.xlsx(init_long_data_experimental, "data/init_long_data_experimental.xlsx", asTable = TRUE)
+
+init_long_data_control <- read_excel("data/init_long_data_control.xlsx")
+init_long_data_experimental <- read_excel("data/init_long_data_experimental.xlsx")
+
+process_likert <- function(data, pattern, question_col = "question", response_col = "response", 
+                           mapping, levels_order) {
+  data %>%
+    filter(str_detect(.data[[question_col]], pattern)) %>%
+    mutate(
+      !!response_col := recode(.data[[response_col]], !!!mapping),
+      !!response_col := factor(.data[[response_col]], levels = levels_order, ordered = TRUE)
+    )
+}
+
+create_graph <- function(data) {
+  summary <- data %>%
+    group_by(question, response, test) %>%
+    summarise(Count = n(), .groups = 'drop') %>%
+    group_by(question, test) %>% 
+    mutate(Percentage = Count / sum(Count) * 100) %>% 
+    ungroup() %>%
+    mutate(color_font = color_font[response])
+  
+  ggplot(summary, aes(x = question, y = Percentage, fill = response)) +
+    geom_bar(stat = "identity", position = "fill") +
+    facet_wrap(~ test) +
+    scale_y_continuous(labels = percent) +
+    scale_fill_brewer(palette = "YlGnBu", breaks = likert_levels) +
+    labs(title = "",
+         x = "Question",
+         y = "Percentage",
+         fill = "Response") +
+    theme_minimal(base_size = 13) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.line = element_line(color = "#3B3B3B", linewidth = 0.3),
+          axis.ticks = element_line(color = "#3B3B3B", linewidth = 0.3),
+          strip.text.x = element_text(size = 14, color = "#3B3B3B"),
+          axis.text.x = element_text(size = 13, color = "#3B3B3B"),
+          axis.text.y = element_text(size = 13, color = "#3B3B3B"),
+          axis.title = element_text(size = 13, color = "#3B3B3B"),
+          legend.title = element_text(size = 13),
+          legend.text = element_text(size = 13)) +
+    geom_text(aes(label = sprintf("%.1f%%", Percentage), color = color_font),
+              position = position_fill(vjust = 0.5),
+              size = 4) +
+    scale_color_identity()
+}
+```
+
+#### Control Group's Student Perspectives (SP) 
+
+```{r, fig.width=12, fig.height=9, out.extra='class="responsive-figure"', eval = FALSE}
+#| code-fold: true
+likert_mapping <- c("1" = "Strongly disagree",
+                    "2" = "Somewhat disagree",
+                    "3" = "Neither agree nor disagree",
+                    "4" = "Somewhat agree",
+                    "5" = "Strongly agree")
+
+likert_levels <- c("Strongly disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Strongly agree")
+
+long_data_control_sp <- process_likert(init_long_data_control, 
+                                         pattern = "^SP[1-8]$",
+                                         mapping = likert_mapping,
+                                         levels_order = likert_levels) %>%
+   mutate(test = factor(if_else(time == 0, "pretest", "posttest"),
+                       levels = c("pretest", "posttest")))
+
+long_data_experimental_sp <- process_likert(init_long_data_experimental, 
+                                              pattern = "^SP[1-8]$",
+                                              mapping = likert_mapping,
+                                              levels_order = likert_levels) %>%
+    mutate(test = factor(if_else(time == 0, "pretest", "posttest"),
+                       levels = c("pretest", "posttest")))
+
+color_font <- c("Strongly disagree" = "black", 
+                "Somewhat disagree" = "black", 
+                "Neither agree nor disagree" = "black", 
+                "Somewhat agree" = "black", 
+                "Strongly agree" = "white")
+
+control_sp <- create_graph(long_data_control_sp)
+ggsave("data/control_sp.png")
+```
+
+```{r, fig.width=14, fig.height=10, out.extra='class="responsive-figure"'}
+control_sp
+```
+
+#### Experimental Group's Student Perspectives (SP) 
+
+```{r, fig.width=12, fig.height=9, out.extra='class="responsive-figure"', eval=FALSE}
+#| code-fold: true
+experimental_sp <- create_graph(long_data_experimental_sp)
+ggsave("data/experimental_sp.png")
+```
+
+```{r, fig.width=14, fig.height=10, out.extra='class="responsive-figure"'}
+experimental_sp
+```
+
+#### Control Group's Perceived Knowledge (PK) 
+
+```{r, fig.width=12, fig.height=9, out.extra='class="responsive-figure"', eval=FALSE}
+#| code-fold: true
+likert_mapping <- c("1" = "Not knowledgeable at all",
+                    "2" = "Slightly knowledgeable",
+                    "3" = "Moderately knowledgeable",
+                    "4" = "Very knowledgeable",
+                    "5" = "Extremely knowledgeable")
+
+likert_levels <- c("Not knowledgeable at all", "Slightly knowledgeable", "Moderately knowledgeable", "Very knowledgeable", "Extremely knowledgeable")
+
+
+long_data_control_pk <- process_likert(init_long_data_control, 
+                                         pattern = "^PK[1-7]$",
+                                         mapping = likert_mapping,
+                                         levels_order = likert_levels) %>%
+   mutate(test = factor(if_else(time == 0, "pretest", "posttest"),
+                       levels = c("pretest", "posttest")))
+
+long_data_experimental_pk <- process_likert(init_long_data_experimental, 
+                                              pattern = "^PK[1-7]$",
+                                              mapping = likert_mapping,
+                                              levels_order = likert_levels) %>%
+    mutate(test = factor(if_else(time == 0, "pretest", "posttest"),
+                       levels = c("pretest", "posttest")))
+
+color_font <- c("Not knowledgeable at all" = "black", 
+                "Slightly knowledgeable" = "black", 
+                "Moderately knowledgeable" = "black", 
+                "Very knowledgeable" = "black", 
+                "Extremely knowledgeable" = "white")
+
+control_pk <- create_graph(long_data_control_pk)
+ggsave("data/control_pk.png")
+```
+
+```{r, fig.width=14, fig.height=10, out.extra='class="responsive-figure"'}
+control_pk
+```
+
+#### Experimental Group's Perceived Knowledge (PK) 
+
+```{r, fig.width=12, fig.height=9, out.extra='class="responsive-figure"', eval=FALSE}
+#| code-fold: true
+experimental_pk<- create_graph(long_data_experimental_pk)
+ggsave("data/experimental_pk.png")
+```
+
+```{r, fig.width=14, fig.height=10, out.extra='class="responsive-figure"'}
+experimental_pk
+```
+
+#### Demonstrated Knowledge (DK)
+
+```{r, eval=FALSE}
+#| code-fold: true
+data_long <- df %>%
+  pivot_longer(
+    cols = DK1:DK6,
+    names_to = "question",
+    values_to = "count"
+  ) %>%
+  mutate(
+    group = factor(group, levels = c(0, 1), labels = c("Control", "Experimental")),
+    time  = factor(time, levels = c(0, 1), labels = c("Pretest", "Posttest"))
+  )
+
+df_summary <- data_long %>%
+  group_by(group, time) %>%
+  summarise(mean_count = mean(count, na.rm = TRUE), .groups = "drop")
+
+diffs <- df_summary %>%
+  pivot_wider(names_from = time, values_from = mean_count) %>%
+  mutate(diff = Posttest - Pretest)
+
+max_vals <- df_summary %>%
+  group_by(group) %>%
+  summarise(max_mean = max(mean_count), .groups = "drop")
+
+annots <- left_join(diffs, max_vals, by = "group") %>%
+  mutate(label = paste("Difference =", round(diff, 2)),
+         x_pos = 1, 
+         y_pos = max_mean * 1.05)  
+
+group_colors <- c("Control" = "blue", "Experimental" = "red")
+
+both_dk <- ggplot(df_summary, aes(x = time, y = mean_count, group = 1, color = group)) +
+  geom_line(size = 1) +
+  geom_point(size = 2.5) +
+  facet_wrap(~ group) +
+  scale_color_manual(values = group_colors) +
+  labs(title = "",
+       x = "Time",
+       y = "Mean Count") +
+  theme_minimal() +
+  geom_text(data = annots, 
+            mapping = aes(x = x_pos + 0.2, 
+                          y = y_pos, label = label), 
+            inherit.aes = FALSE, size = 3.5, color = "black")
+
+ggsave("data/both_dk.png")
+
+```
+
+```{r, fig.width=10, fig.height=6, out.extra='class="responsive-figure"'}
+both_dk 
 ```
 
 ## Student Perspectives
