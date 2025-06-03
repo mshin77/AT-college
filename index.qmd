@@ -1,5 +1,5 @@
 ---
-title: "Effects of Interactive and Hands-on Learning Experience of Assistive Technology on College Students' Perspectives and Knowledge: A Quasi-Experimental Study"
+title: "Effects of Interactive and Hands-on Learning Experience of Assistive Technology on College Students' Perspectives and Knowledge"
 date: "`r Sys.Date()`"
 format:
   html:
@@ -11,7 +11,7 @@ format:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ```
 
-[This website](https://at-college.netlify.app) contains `R codes` used for the analyses in the manuscript titled `"Effects of interactive and hands-on learning experience of assistive technology on college students' perspectives and knowledge: A quasi-experimental study."` The scripts were also posted through an online data repository at [https://osf.io](https://osf.io/cgmdj/?view_only=c98ebb08447c4ca0b5e1a28f1b0269f2).
+[This website](https://at-college.netlify.app) contains `R codes` used for the analyses in the manuscript titled `"Effects of interactive and hands-on learning experience of assistive technology on college students' perspectives and knowledge."` The scripts were also posted through an online data repository at [https://osf.io](https://osf.io/cgmdj/?view_only=c98ebb08447c4ca0b5e1a28f1b0269f2).
 
 ::: panel-tabset
 
@@ -50,7 +50,7 @@ demo_tbl <- df %>%
     group == "0" ~ "Control"
   )) %>%
   filter(time == "0") %>%
-  dplyr::select(group, gender, year, college, myself, family, classmates) %>%
+  dplyr::select(group, gender, year, college) %>%
   tbl_summary(by = group,
               percent = "column") 
 
