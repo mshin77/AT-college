@@ -1,0 +1,405 @@
+---
+title: "Effects of Interactive and Hands-on Learning Experience of Assistive Technology on College Students' Perspectives and Knowledge"
+date: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: false
+    code-tools: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+[This website](https://mshin77.github.io/AT-college/) contains `R code` used for the analyses in Park et al. (in press). The scripts were also posted through an online data repository at [https://osf.io](https://doi.org/10.17605/OSF.IO/CGMDJ).
+
+Park, J., Gremp, M., & Shin, M. (in press). Effects of interactive and hands-on learning experience of assistive technology on college students' perspectives and knowledge. *Education and Information Technologies*.
+
+::: panel-tabset
+
+## Set-Up  
+
+```{r}
+#| code-fold: true
+suppressPackageStartupMessages({
+  library(stringr)
+  library(scales)
+  library(reshape2)
+  library(gtsummary)
+  library(flextable)
+  library(purrr)
+  library(ggeffects)
+  library(ggplot2)
+  library(dplyr)
+  library(ordinal)
+  library(texreg)
+  library(MASS)
+  library(nlme)
+  library(tidyr)
+})
+
+load("data/AT-college.RData")
+```
+
+#### Demographic Profiles of Participants
+
+```{r, eval = FALSE}
+df$group <- as.factor(df$group)
+
+demo_tbl <- df %>%
+  mutate(group = case_when(
+    group == "1" ~ "Treatment",
+    group == "0" ~ "Control"
+  )) %>%
+  filter(time == "0") %>%
+  dplyr::select(group, gender, year, college) %>%
+  tbl_summary(by = group,
+              percent = "column") 
+
+demo_tbl_ft <- as_flex_table(demo_tbl)
+```
+
+
+```{r}
+demo_tbl_ft 
+```
+
+
+## Student Perspectives
+
+```{r}
+#| code-fold: true
+reverse_thresholds <- function(data) {
+  
+  sum <- summary(data)
+  
+  cf <- as.data.frame(sum$coefficients)
+  
+  cf[1:4, 1] <- cf[1:4, 1] * -1
+  cf[1:4, 3] <- cf[1:4, 3] * -1
+  
+  rownames(cf)[1:4] <- c("intercept (Y>1)", "intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
+  
+  return(cf)
+}
+
+reverse_thresholds_alt <- function(data) {
+  
+  sum <- summary(data)
+  
+  cf <- as.data.frame(sum$coefficients)
+  
+  cf[1:3, 1] <- cf[1:3, 1] * -1
+  cf[1:3, 3] <- cf[1:3, 2] * -1
+  
+  rownames(cf)[1:3] <- c("intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
+  
+  return(cf)
+}
+```
+
+#### Main Effects (SP)
+
+**SP1** 
+
+```{r, eval = FALSE}
+df$SP1 <- as.factor(df$SP1)
+
+main.SP1 <- clmm(SP1 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP1)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP2**
+
+```{r, eval = FALSE}
+df$SP2 <- as.factor(df$SP2)
+
+main.SP2 <- clmm(SP2 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds_alt(main.SP2)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP3**
+
+```{r, eval = FALSE}
+df$SP3 <- as.factor(df$SP3)
+
+main.SP3 <- clmm(SP3 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP3)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP4**
+
+```{r, eval = FALSE}
+df$SP4 <- as.factor(df$SP4)
+
+main.SP4 <- clmm(SP4 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP4)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP5**
+
+```{r, eval = FALSE}
+df$SP5 <- as.factor(df$SP5)
+
+main.SP5 <- clmm(SP5 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP5)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP6**
+
+```{r, eval = FALSE}
+df$SP6 <- as.factor(df$SP6)
+
+main.SP6 <- clmm(SP6 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP6)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP7**
+
+```{r, eval = FALSE}
+df$SP7 <- as.factor(df$SP7)
+
+main.SP7 <- clmm(SP7 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP7)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**SP8**
+
+```{r, eval = FALSE}
+df$SP8 <- as.factor(df$SP8)
+
+main.SP8 <- clmm(SP8 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.SP8)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+```{r}
+screenreg(list(main.SP1, main.SP2, main.SP3, main.SP4, main.SP5, main.SP6, main.SP7, main.SP8), 
+          custom.model.names = c("SP 1", "SP 2", "SP 3", "SP 4", "SP 5", "SP 6", "SP 7", "SP 8"))
+```
+
+
+## Perceived Knowledge 
+
+#### Main Effects (PK)
+
+**PK1**
+
+```{r, eval = FALSE}
+df$PK1 <- as.factor(df$PK1)
+
+main.PK1 <- clmm(PK1 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK1)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**PK2**
+
+```{r, eval = FALSE}
+df$PK2 <- as.factor(df$PK2)
+
+main.PK2 <- clmm(PK2 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK2)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**PK3**
+
+```{r, eval = FALSE}
+df$PK3 <- as.factor(df$PK3)
+
+main.PK3 <- clmm(PK3 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK3)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**PK4**
+
+```{r, eval = FALSE}
+df$PK4 <- as.factor(df$PK4)
+
+main.PK4 <- clmm(PK4 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK4)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**PK5**
+
+```{r, eval = FALSE}
+df$PK5 <- as.factor(df$PK5)
+
+main.PK5 <- clmm(PK5 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK5)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**PK6**
+
+```{r, eval = FALSE}
+df$PK6 <- as.factor(df$PK6)
+
+main.PK6 <- clmm(PK6 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK6)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+**PK7**
+
+```{r, eval = FALSE}
+df$PK7 <- as.factor(df$PK7)
+
+main.PK7 <- clmm(PK7 ~ group + time + group:time +
+                    (1 | student), data = df, Hess=TRUE, nAGQ=7)
+```
+
+
+```{r}
+cf <- reverse_thresholds(main.PK7)
+
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 2))
+```
+
+```{r}
+screenreg(list(main.PK1, main.PK2, main.PK3, main.PK4, main.PK5, main.PK6, main.PK7), 
+          custom.model.names = c("PK 1", "PK 2", "PK 3", "PK 4", "PK 5", "PK 6", "PK 7"))
+```
+
+
+## Demonstrated Knowledge 
+
+#### Main Effects (DK)
+
+```{r, eval = FALSE}
+main.DK <- glmmPQL(DK ~ group + time + group:time,
+                random = ~ 1 | student, data = df, family=poisson)
+```
+
+```{r}
+sum <- summary(main.DK)
+
+cf <- sum$tTable %>% as.data.frame()
+cf$Estimate <- cf$Value
+cf %>% mutate(irr = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 3)) %>%
+  dplyr::select(-Value) %>%
+  dplyr::select(Estimate, everything()) 
+```
+
+
+```{r}
+VarCorr(main.DK)
+```
+
+
+```{r}
+screenreg(list(main.DK), 
+          custom.model.names = c("DK Main Effects"))
+```
+
+:::
