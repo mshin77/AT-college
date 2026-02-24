@@ -1,0 +1,1 @@
+Park, J., Gremp, M., & Shin, M. (in press). Effects of interactive and hands-on learning experience of assistive technology on college students' perspectives and knowledge. *Education and Information Technologies*.
