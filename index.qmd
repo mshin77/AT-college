@@ -11,7 +11,7 @@ format:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ```
 
-[This website](https://mshin77.github.io/AT-college/) contains `R code` used for the analyses in Park et al. (in press). The scripts were also posted through an online data repository at [https://osf.io](https://doi.org/10.17605/OSF.IO/CGMDJ).
+[This website](https://mshin77.github.io/AT-college/) contains `R code` used for the analyses in Park et al. (in press). The scripts were also posted through an online data repository at [Center for Open Science](https://doi.org/10.17605/OSF.IO/CGMDJ) and [GitHub](https://github.com/mshin77/AT-college).
 
 Park, J., Gremp, M., & Shin, M. (in press). Effects of interactive and hands-on learning experience of assistive technology on college students' perspectives and knowledge. *Education and Information Technologies*.
 
