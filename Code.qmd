@@ -90,7 +90,7 @@ reverse_thresholds_alt <- function(data) {
   cf <- as.data.frame(sum$coefficients)
   
   cf[1:3, 1] <- cf[1:3, 1] * -1
-  cf[1:3, 3] <- cf[1:3, 2] * -1
+  cf[1:3, 3] <- cf[1:3, 3] * -1
   
   rownames(cf)[1:3] <- c("intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
   
